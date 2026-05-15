@@ -1,0 +1,11 @@
+consulta en postman ejemplo
+
+http://localhost:8000/api/matriculas
+
+filtros en postman
+
+http://localhost:8000/api/matriculas?asignatura_id=14
+
+consulta anidada
+
+http://localhost:8000/api/matriculas?asignatura_id=14&with=asignatura.programa
