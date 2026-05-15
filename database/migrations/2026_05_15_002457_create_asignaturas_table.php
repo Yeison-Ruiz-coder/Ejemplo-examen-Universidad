@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('creditos');
-            $table->dateTime('ih');
-
+            $table->decimal('ih', 4, 2);
             $table->foreignId('profesor_id')
                 ->nullable()
                 ->constrained('profesores')

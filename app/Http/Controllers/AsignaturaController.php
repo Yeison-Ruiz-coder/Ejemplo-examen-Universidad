@@ -7,64 +7,61 @@ use Illuminate\Http\Request;
 
 class AsignaturaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // Obtener todas las asignaturas
+    public function index(Request $request)
     {
-        $asignatura = Asignatura::with('asignatura')->paginate(15);
+        $asignaturas = Asignatura::filter($request->all());
 
-        return response()->json([
-            'success' => true,
-            'data' => $asignatura
-        ]);
+        if ($request->has('with')) {
+            $relations = explode(',', $request->with);
+            $asignaturas = $asignaturas->with($relations);
+        }
+
+        return response()->json($asignaturas->get());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // Obtener una asignatura específica
+    public function show($id)
     {
+        $asignatura = Asignatura::find($id);
 
+        if (!$asignatura) {
+            return response()->json(['error' => 'Asignatura no encontrada'], 404);
+        }
+
+        return response()->json($asignatura);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Crear una asignatura
     public function store(Request $request)
     {
-        //
+        $asignatura = Asignatura::create($request->all());
+        return response()->json($asignatura, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Asignatura $asignatura)
+    // Actualizar una asignatura
+    public function update(Request $request, $id)
     {
-        //
+        $asignatura = Asignatura::find($id);
+
+        if (!$asignatura) {
+            return response()->json(['error' => 'Asignatura no encontrada'], 404);
+        }
+
+        $asignatura->update($request->all());
+        return response()->json($asignatura);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Asignatura $asignatura)
+    // Eliminar una asignatura
+    public function destroy($id)
     {
-        //
-    }
+        $asignatura = Asignatura::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Asignatura $asignatura)
-    {
-        //
-    }
+        if (!$asignatura) {
+            return response()->json(['error' => 'Asignatura no encontrada'], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Asignatura $asignatura)
-    {
-        //
+        $asignatura->delete();
+        return response()->json(['message' => 'Asignatura eliminada']);
     }
 }

@@ -10,33 +10,56 @@ class Asignatura extends Model
     use HasFactory;
     protected $fillable = [
         'nombre',
-        'codigo',
         'creditos',
+        'ih',
         'profesor_id',
+        'programa_id',
     ];
 
     public function profesor()
     {
-        return $this->belongsTo(Profesores::class, 'profesor_id');
+        return $this->belongsTo(Profesor::class, 'profesor_id');
     }
 
     public function programa()
     {
-        return $this->belongsTo(Programas::class, 'programa_id');
+        return $this->belongsTo(Programa::class, 'programa_id');
     }
 
     public function matriculas()
     {
-        return $this->hasMany(Matriculas::class, 'asignatura_id');
+        return $this->hasMany(Matricula::class, 'asignatura_id');
     }
 
     public function horarios()
     {
-        return $this->hasMany(Horarios::class, 'asignatura_id');
+        return $this->hasMany(Horario::class, 'asignatura_id');
     }
 
     public function grupos()
     {
-        return $this->hasMany(Grupos::class, 'asignatura_id');
+        return $this->hasMany(Grupo::class, 'asignatura_id');
+    }
+    
+
+    public function scopeFilter($query, $filters)
+    {
+        if (isset($filters['creditos'])) {
+            $query->where('creditos', $filters['creditos']);
+        }
+
+        if (isset($filters['profesor_id'])) {
+            $query->where('profesor_id', $filters['profesor_id']);
+        }
+
+        if (isset($filters['programa_id'])) {
+            $query->where('programa_id', $filters['programa_id']);
+        }
+
+        if (isset($filters['search'])) {
+            $query->where('nombre', 'like', '%' . $filters['search'] . '%');
+        }
+
+        return $query;
     }
 }
